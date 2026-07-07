@@ -15,7 +15,7 @@ from core import EntityRecognizer, Retriever, load_data
 # Absolute path to data/medquad.csv, resolved relative to this script's own
 # location (not the terminal's current working directory). This means the
 # app works no matter which folder you launch `streamlit run` from.
-DATA_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "medquad.csv")
+DATA_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "medquad.csv")
 
 st.set_page_config(page_title="Medical Q&A Chatbot", page_icon="🩺", layout="wide")
 
