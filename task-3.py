@@ -1,41 +1,25 @@
 """
 app.py
-------
 Streamlit UI for the Medical Q&A Chatbot built on the MedQuAD dataset.
-
-Run with:
-    streamlit run app.py
+Run with: streamlit run app.py
 """
 import os
-
 import streamlit as st
-
 from core import EntityRecognizer, Retriever, load_data
-
 # Absolute path to data/medquad.csv, resolved relative to this script's own
 # location (not the terminal's current working directory). This means the
 # app works no matter which folder you launch `streamlit run` from.
 DATA_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "medquad.csv")
-
 st.set_page_config(page_title="Medical Q&A Chatbot", page_icon="🩺", layout="wide")
-
-
-# --------------------------------------------------------------------------
 # Cached resources: loaded once per session, not on every rerun.
-# --------------------------------------------------------------------------
 @st.cache_resource(show_spinner="Loading MedQuAD dataset and building index...")
 def get_resources():
     df = load_data(DATA_PATH)
     retriever = Retriever(df)
     recognizer = EntityRecognizer(df["focus"].dropna().unique().tolist())
     return df, retriever, recognizer
-
-
 df, retriever, recognizer = get_resources()
-
-# --------------------------------------------------------------------------
 # Sidebar
-# --------------------------------------------------------------------------
 with st.sidebar:
     st.header("🩺 About")
     st.write(
@@ -64,22 +48,16 @@ with st.sidebar:
     for ex in examples:
         if st.button(ex, use_container_width=True):
             st.session_state["query_input"] = ex
-
-# --------------------------------------------------------------------------
 # Main panel
-# --------------------------------------------------------------------------
 st.title("🩺 Medical Q&A Chatbot")
 st.caption("Ask a medical question in plain English — powered by MedQuAD retrieval + entity recognition.")
-
 query = st.text_input(
     "Ask your medical question:",
     key="query_input",
     placeholder="e.g. What are the treatments for Paget's disease of bone?",
 )
-
 if query:
     entities = recognizer.extract(query)
-
     # Detected entities row
     with st.container(border=True):
         st.markdown("**🔍 Detected medical entities**")
@@ -93,11 +71,8 @@ if query:
         with cols[2]:
             st.markdown("**Treatments**")
             st.write(", ".join(entities.treatments) if entities.treatments else "_none detected_")
-
     st.divider()
-
     results = retriever.search(query, top_k=top_k)
-
     if results.empty:
         st.warning("I couldn't find a confident match for that question. Try rephrasing it.")
     else:
