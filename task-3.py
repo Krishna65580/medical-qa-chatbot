@@ -1,8 +1,3 @@
-"""
-app.py
-Streamlit UI for the Medical Q&A Chatbot built on the MedQuAD dataset.
-Run with: streamlit run app.py
-"""
 import os
 import streamlit as st
 from core import EntityRecognizer, Retriever, load_data
